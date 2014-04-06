@@ -10,7 +10,7 @@ CompactConstraint brings compact, readable syntax to creating NSLayoutConstraint
 ```obj-c
 [self.view addConstraint:[NSLayoutConstraint constraintWithItem:emailLabel attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:emailField attribute:NSLayoutAttributeLeft multiplier:1.0f constant:0.0f]];
 [self.view addConstraint:[NSLayoutConstraint constraintWithItem:spinner attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:logInButton attribute:NSLayoutAttributeRight multiplier:1.0f constant:10.0f]];
-[self.view addConstraint:[NSLayoutConstraint constraintWithItem:preview attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:preview attribute:NSLayoutAttributeWidth multiplier:0.625f constant:10.0f]];
+[self.view addConstraint:[NSLayoutConstraint constraintWithItem:preview attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:preview attribute:NSLayoutAttributeWidth multiplier:0.625f constant:0.0f]];
 ```
 
 CompactConstraint lets you write them like this:
@@ -35,7 +35,7 @@ Or this:
 
 CompactConstraint syntax maps directly to the paramters passed to NSLayoutConstraint's built-in `constraintWithItem:attribute:relatedBy:toItem:attribute:multiplier:constant:` method:
 
-    leftItem.attribute [=/<=/>=] rightItem.attribute * multiplier + constant
+    leftItem.attribute [= == <= >=] rightItem.attribute [* /] multiplier [+ -] constant
 
 `leftItem` and `rightItem` are keys from the supplied `views` directory that map to UIViews, just like with Apple's visual-format-language calls.
 
