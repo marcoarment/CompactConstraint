@@ -37,7 +37,7 @@ CompactConstraint syntax maps directly to the paramters passed to NSLayoutConstr
 
     leftItem.attribute [= == <= >=] rightItem.attribute [* /] multiplier [+ -] constant
 
-`leftItem` and `rightItem` are keys from the supplied `views` directory that map to UIViews, just like with Apple's visual-format-language calls.
+`leftItem` and `rightItem` are keys from the supplied `views` dictionary that map to UIViews, just like with Apple's visual-format-language calls.
 
 `rightItem` may be "super", which is interpreted as `leftItem`'s superview. If you specify a `@"super"` key in `views`, your supplied value will be used instead.
 
