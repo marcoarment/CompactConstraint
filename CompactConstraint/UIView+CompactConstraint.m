@@ -14,9 +14,18 @@
     return constraint;
 }
 
-- (void)addCompactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views;
+- (NSArray *)addCompactConstraints:(NSArray *)relationshipStrings
+                           metrics:(NSDictionary *)metrics
+                             views:(NSDictionary *)views;
 {
-    for (NSString *relationship in relationshipStrings) [self addConstraint:[NSLayoutConstraint compactConstraint:relationship metrics:metrics views:views]];
+    NSMutableArray *mConstraints = [NSMutableArray arrayWithCapacity:relationshipStrings.count];
+    for (NSString  *relationship in relationshipStrings)
+        [mConstraints addObject:[NSLayoutConstraint compactConstraint:relationship
+                                                              metrics:metrics
+                                                                views:views]];
+    NSArray        *constraints  = [mConstraints copy];
+    [self addConstraints:constraints];
+    return constraints;
 }
 
 - (void)addConstraintsWithVisualFormat:(NSString *)format options:(NSLayoutFormatOptions)opts metrics:(NSDictionary *)metrics views:(NSDictionary *)views
