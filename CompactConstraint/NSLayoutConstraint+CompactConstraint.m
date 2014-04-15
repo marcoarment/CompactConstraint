@@ -63,7 +63,8 @@
     BOOL rightOperandIsMetric = NO;
     NSString *leftOperandStr, *leftPropertyStr, *operatorStr, *rightOperandStr, *rightPropertyStr, *rightValueStr;
 
-    NSAssert([scanner scanUpToCharactersFromSet:leftOperandTerminatingCharacterSet intoString:&leftOperandStr], @"No left operand given");
+    BOOL leftOperandScanned = [scanner scanUpToCharactersFromSet:leftOperandTerminatingCharacterSet intoString:&leftOperandStr];
+    NSAssert(leftOperandScanned, @"No left operand given");
     leftOperandStr = [leftOperandStr stringByTrimmingCharactersInSet:leftOperandTerminatingCharacterSet];
     NSRange lastDot = [leftOperandStr rangeOfString:@"." options:NSBackwardsSearch];
     NSAssert1(lastDot.location != NSNotFound, @"Left operand has no property, e.g. '%@.width'", leftOperandStr);
@@ -76,7 +77,8 @@
     NSAssert1(leftAttributeNumber, @"Unrecognized left property '%@'", leftPropertyStr);
     leftAttribute = [leftAttributeNumber integerValue];
 
-    NSAssert([scanner scanCharactersFromSet:operatorCharacterSet intoString:&operatorStr], @"No operator given");
+    BOOL operatorScanned = [scanner scanCharactersFromSet:operatorCharacterSet intoString:&operatorStr];
+    NSAssert(operatorScanned, @"No operator given");
     NSLayoutRelation relation;
     if ([operatorStr isEqualToString:@"=="] || [operatorStr isEqualToString:@"="]) relation = NSLayoutRelationEqual;
     else if ([operatorStr isEqualToString:@">="]) relation = NSLayoutRelationGreaterThanOrEqual;
@@ -89,7 +91,8 @@
         rightAttribute = NSLayoutAttributeNotAnAttribute;
     } else {
         // right operand is a symbol. Either a metric or a view. Views have dot-properties, metrics don't.
-        NSAssert([scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightOperandStr], @"No right operand given");
+        BOOL rightOperandScanned = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightOperandStr];
+        NSAssert(rightOperandScanned, @"No right operand given");
 
         lastDot = [rightOperandStr rangeOfString:@"." options:NSBackwardsSearch];
         if (lastDot.location == NSNotFound) {
@@ -120,7 +123,8 @@
     if ([scanner scanCharactersFromSet:multiplicationOperatorCharacterSet intoString:&valueOperator]) {
         if (! [scanner scanDouble:&rightScalar]) {
             // see if the scalar is a metric instead of a literal number
-            NSAssert([scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr], @"No scalar given after '*' on right side");
+            BOOL scalarAfterMultiplication = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr];
+            NSAssert(scalarAfterMultiplication, @"No scalar given after '*' on right side");
             rightMetricNumber = metrics[rightValueStr];
             NSAssert1(rightMetricNumber, @"Right scalar '%@' not found in metrics dictionary", rightValueStr);
             rightScalar = [rightMetricNumber doubleValue];
@@ -132,7 +136,8 @@
     if ([scanner scanCharactersFromSet:additionOperatorCharacterSet intoString:&valueOperator]) {
         if (! [scanner scanDouble:&rightConstant]) {
             // see if the scalar is a metric instead of a literal number
-            NSAssert([scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr], @"No constant given after '+' on right side");
+            BOOL constantAfterAddition = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr];
+            NSAssert(constantAfterAddition, @"No constant given after '+' on right side");
             rightMetricNumber = metrics[rightValueStr];
             NSAssert1(rightMetricNumber, @"Right constant '%@' not found in metrics dictionary", rightValueStr);
             rightConstant = [rightMetricNumber doubleValue];
