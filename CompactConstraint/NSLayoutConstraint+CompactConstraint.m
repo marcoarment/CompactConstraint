@@ -75,7 +75,7 @@
 
     leftAttributeNumber = propertyDictionary[leftPropertyStr];
     NSAssert1(leftAttributeNumber, @"Unrecognized left property '%@'", leftPropertyStr);
-    leftAttribute = [leftAttributeNumber integerValue];
+    leftAttribute = (NSLayoutAttribute) [leftAttributeNumber integerValue];
 
     BOOL operatorScanned = [scanner scanCharactersFromSet:operatorCharacterSet intoString:&operatorStr];
     NSAssert(operatorScanned, @"No operator given");
@@ -115,7 +115,7 @@
 
             rightAttributeNumber = propertyDictionary[rightPropertyStr];
             NSAssert1(rightAttributeNumber, @"Unrecognized right property '%@'", rightPropertyStr);
-            rightAttribute = [rightAttributeNumber integerValue];
+            rightAttribute = (NSLayoutAttribute) [rightAttributeNumber integerValue];
         }
     }
 
