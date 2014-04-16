@@ -7,16 +7,28 @@
 
 @implementation NSLayoutConstraint (CompactConstraint)
 
+
+
 + (NSArray *)compactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views
+{
+    return [self compactConstraints:relationshipStrings metrics:metrics views:views self:nil];
+}
+
++ (NSArray *)compactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views self:(id)selfView
 {
     NSMutableArray *constraints = [NSMutableArray array];
     for (NSString *relationship in relationshipStrings) {
-        [constraints addObject:[self compactConstraint:relationship metrics:metrics views:views]];
+        [constraints addObject:[self compactConstraint:relationship metrics:metrics views:views self:selfView]];
     }
     return [constraints copy];
 }
 
 + (instancetype)compactConstraint:(NSString *)relationship metrics:(NSDictionary *)metrics views:(NSDictionary *)views
+{
+    return [self compactConstraint:relationship metrics:metrics views:views self:nil];
+}
+
++ (instancetype)compactConstraint:(NSString *)relationship metrics:(NSDictionary *)metrics views:(NSDictionary *)views self:(id)selfView
 {
     static NSCharacterSet *operatorCharacterSet = nil;
     static NSCharacterSet *multiplicationOperatorCharacterSet = nil;
@@ -71,6 +83,10 @@
     leftPropertyStr = [leftOperandStr substringFromIndex:lastDot.location];
     leftOperandStr = [leftOperandStr substringToIndex:lastDot.location];
     leftOperand = views[leftOperandStr];
+    if (! leftOperand && [leftOperandStr isEqualToString:@"self"]) {
+        leftOperand = selfView;
+        NSAssert(leftOperand, @"Left operand is self, but self is nil or not supplied");
+    }
     NSAssert1(leftOperand, @"Left operand '%@' not found in views dictionary", leftOperandStr);
 
     leftAttributeNumber = propertyDictionary[leftPropertyStr];
@@ -107,9 +123,14 @@
             rightPropertyStr = [rightOperandStr substringFromIndex:lastDot.location];
             rightOperandStr = [rightOperandStr substringToIndex:lastDot.location];
             rightOperand = views[rightOperandStr];
-            if (! rightOperand && [rightOperandStr isEqualToString:@"super"]) {
-                rightOperand = [leftOperand superview];
-                NSAssert(rightOperand, @"Right operand is super, but superview of left operand is nil");
+            if (! rightOperand) {
+                if ([rightOperandStr isEqualToString:@"super"]) {
+                    rightOperand = [leftOperand superview];
+                    NSAssert(rightOperand, @"Right operand is super, but superview of left operand is nil");
+                } else if ([rightOperandStr isEqualToString:@"self"]) {
+                    rightOperand = selfView;
+                    NSAssert(rightOperand, @"Right operand is self, but self is nil or not supplied");
+                }
             }
             NSAssert1(rightOperand, @"Right operand '%@' not found in views dictionary", rightOperandStr);
 
