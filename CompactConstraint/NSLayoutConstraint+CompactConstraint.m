@@ -170,7 +170,7 @@ static CGFloat standardSpacingToView = 8.;
             BOOL constantAfterAddition = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr];
             NSAssert(constantAfterAddition, @"No constant given after '+' on right side");
             if ([rightValueStr isEqualToString:@"std"] && !rightOperandIsMetric) {
-                if ([leftOperand superview] == rightOperand || [rightOperand superview] == leftOperand) {
+                if ([leftOperand isDescendantOfView:rightOperand] || [rightOperand isDescendantOfView:leftOperand]) {
                     rightConstant = standardSpacingToSuperview;
                 } else {
                     rightConstant = standardSpacingToView;
