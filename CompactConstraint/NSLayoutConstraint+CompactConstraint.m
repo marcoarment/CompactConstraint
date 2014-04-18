@@ -5,8 +5,10 @@
 
 #import "NSLayoutConstraint+CompactConstraint.h"
 
-@implementation NSLayoutConstraint (CompactConstraint)
+static CGFloat standardSpacingToSuperview = 20.;
+static CGFloat standardSpacingToView = 8.;
 
+@implementation NSLayoutConstraint (CompactConstraint)
 
 
 + (NSArray *)compactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views
@@ -116,9 +118,17 @@
             rightOperandIsMetric = YES;
             rightAttribute = NSLayoutAttributeNotAnAttribute;
             rightOperand = nil;
+            if ([rightOperandStr isEqualToString:@"std"]) {
+                if (leftAttribute == NSLayoutAttributeTop || leftAttribute == NSLayoutAttributeLeft) {
+                    rightMetric = standardSpacingToSuperview;
+                } else {
+                    NSAssert(NO, @"Right metric 'std' can only be used with 'top' or 'left' left attributed");
+                }
+            } else {
             rightMetricNumber = metrics[rightOperandStr];
             NSAssert1(rightMetricNumber, @"Right metric '%@' not found in metrics dictionary", rightOperandStr);
             rightMetric = [rightMetricNumber doubleValue];
+            }
         } else {
             rightPropertyStr = [rightOperandStr substringFromIndex:lastDot.location];
             rightOperandStr = [rightOperandStr substringToIndex:lastDot.location];
@@ -159,9 +169,17 @@
             // see if the scalar is a metric instead of a literal number
             BOOL constantAfterAddition = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr];
             NSAssert(constantAfterAddition, @"No constant given after '+' on right side");
-            rightMetricNumber = metrics[rightValueStr];
-            NSAssert1(rightMetricNumber, @"Right constant '%@' not found in metrics dictionary", rightValueStr);
-            rightConstant = [rightMetricNumber doubleValue];
+            if ([rightValueStr isEqualToString:@"std"] && !rightOperandIsMetric) {
+                if ([leftOperand superview] == rightOperand || [rightOperand superview] == leftOperand) {
+                    rightConstant = standardSpacingToSuperview;
+                } else {
+                    rightConstant = standardSpacingToView;
+                }
+            } else {
+                rightMetricNumber = metrics[rightValueStr];
+                NSAssert1(rightMetricNumber, @"Right constant '%@' not found in metrics dictionary", rightValueStr);
+                rightConstant = [rightMetricNumber doubleValue];
+            }
         }
 
         if ([valueOperator isEqualToString:@"-"]) rightConstant = -rightConstant;
@@ -175,4 +193,11 @@
     return [NSLayoutConstraint constraintWithItem:leftOperand attribute:leftAttribute relatedBy:relation toItem:rightOperand attribute:rightAttribute multiplier:rightScalar constant:rightConstant];
 }
 
++ (void) setStandardSpacingToSuperview:(CGFloat)value {
+    standardSpacingToSuperview = value;
+}
+
++ (void) setStandardSpacingToView:(CGFloat)value {
+    standardSpacingToView = value;
+}
 @end
