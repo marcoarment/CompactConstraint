@@ -7,8 +7,6 @@
 
 @implementation NSLayoutConstraint (CompactConstraint)
 
-
-
 + (NSArray *)compactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views
 {
     return [self compactConstraints:relationshipStrings metrics:metrics views:views self:nil];
@@ -27,6 +25,10 @@
 {
     return [self compactConstraint:relationship metrics:metrics views:views self:nil];
 }
+
+// For release builds, where the asserted variables (leftOperandScanned, etc.) aren't used because the assertions are removed
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
 
 + (instancetype)compactConstraint:(NSString *)relationship metrics:(NSDictionary *)metrics views:(NSDictionary *)views self:(id)selfView
 {
@@ -174,5 +176,7 @@
 
     return [NSLayoutConstraint constraintWithItem:leftOperand attribute:leftAttribute relatedBy:relation toItem:rightOperand attribute:rightAttribute multiplier:rightScalar constant:rightConstant];
 }
+
+#pragma clang diagnostic pop
 
 @end
