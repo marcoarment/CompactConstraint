@@ -35,6 +35,7 @@
     static NSCharacterSet *operatorCharacterSet = nil;
     static NSCharacterSet *multiplicationOperatorCharacterSet = nil;
     static NSCharacterSet *additionOperatorCharacterSet = nil;
+    static NSCharacterSet *priorityOperatorCharacterSet = nil;
     static NSCharacterSet *leftOperandTerminatingCharacterSet = nil;
     static NSCharacterSet *rightOperandTerminatingCharacterSet = nil;
     static NSDictionary *propertyDictionary = nil;
@@ -55,10 +56,12 @@
 
         multiplicationOperatorCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"*/"];
         additionOperatorCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"+-"];
+        priorityOperatorCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"@"];
 
         NSMutableCharacterSet *rotcs = [NSCharacterSet.whitespaceAndNewlineCharacterSet mutableCopy];
         [rotcs formUnionWithCharacterSet:multiplicationOperatorCharacterSet];
         [rotcs formUnionWithCharacterSet:additionOperatorCharacterSet];
+        [rotcs formUnionWithCharacterSet:priorityOperatorCharacterSet];
         rightOperandTerminatingCharacterSet = [rotcs copy];
 
         operatorCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"<>="];
@@ -73,7 +76,7 @@
 
     id leftOperand, rightOperand, leftAttributeNumber, rightAttributeNumber, rightMetricNumber;
     NSLayoutAttribute leftAttribute, rightAttribute;
-    double rightScalar = 1.0, rightConstant = 0.0, rightMetric = 0.0;
+    double rightScalar = 1.0, rightConstant = 0.0, rightMetric = 0.0, priority = UILayoutPriorityRequired;
     BOOL rightOperandIsMetric = NO;
     NSString *leftOperandStr, *leftPropertyStr, *operatorStr, *rightOperandStr, *rightPropertyStr, *rightValueStr;
 
@@ -173,8 +176,21 @@
         rightConstant = rightMetric * rightScalar + rightConstant;
         rightScalar = 1.0;
     }
+    
+    if ([scanner scanCharactersFromSet:priorityOperatorCharacterSet intoString:NULL]) {
+        if (! [scanner scanDouble:&priority]) {
+            // see if the priority is a metric instead of a literal number
+            BOOL priorityAfterAt = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr];
+            NSAssert(priorityAfterAt, @"No priority given after '@' on right side");
+            rightMetricNumber = metrics[rightValueStr];
+            NSAssert1(rightMetricNumber, @"Right priority '%@' not found in metrics dictionary", rightValueStr);
+            priority = [rightMetricNumber doubleValue];
+        }
+    }
 
-    return [NSLayoutConstraint constraintWithItem:leftOperand attribute:leftAttribute relatedBy:relation toItem:rightOperand attribute:rightAttribute multiplier:rightScalar constant:rightConstant];
+    NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:leftOperand attribute:leftAttribute relatedBy:relation toItem:rightOperand attribute:rightAttribute multiplier:rightScalar constant:rightConstant];
+    constraint.priority = priority;
+    return constraint;
 }
 
 #pragma clang diagnostic pop
