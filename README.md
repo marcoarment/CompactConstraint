@@ -59,7 +59,7 @@ centerY
 baseline
 ```
 
-For example, given these dictionaries as the `views` and `metrics` paramters:
+For example, given these dictionaries as the `views` and `metrics` parameters:
 
 ```obj-c
 NSDictionary *views = @{
