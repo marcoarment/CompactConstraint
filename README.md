@@ -35,13 +35,13 @@ Or this:
 
 CompactConstraint syntax maps directly to the paramters passed to NSLayoutConstraint's built-in `constraintWithItem:attribute:relatedBy:toItem:attribute:multiplier:constant:` method:
 
-    leftItem.attribute [= == <= >=] rightItem.attribute [* /] multiplier [+ -] constant
+    leftItem.attribute [= == <= >=] rightItem.attribute [* /] multiplier [+ -] constant @ priority
 
 `leftItem` and `rightItem` are keys from the supplied `views` dictionary that map to UIViews, just like with Apple's visual-format-language calls.
 
 `rightItem` may be "super", which is interpreted as `leftItem`'s superview. If you specify a `@"super"` key in `views`, your supplied value will be used instead.
 
-`multiplier` and `constant` are optional. Additionally, `rightItem.attribute`, `multiplier`, and `constant` can all optionally be replaced by entries in the supplied `metrics` dictionary, mapping to NSNumbers.
+`multiplier`, `constant`, and `priority` are optional. Additionally, `rightItem.attribute`, `multiplier`, `constant`, and `priority` can all optionally be replaced by entries in the supplied `metrics` dictionary, mapping to NSNumbers.
 
 Valid attributes are simply the ends of the `NSLayoutAttribute` definitions with initial lowercase letters:
 
@@ -59,7 +59,7 @@ centerY
 baseline
 ```
 
-For example, given these dictionaries as the `views` and `metrics` paramters:
+For example, given these dictionaries as the `views` and `metrics` parameters:
 
 ```obj-c
 NSDictionary *views = @{
@@ -72,6 +72,7 @@ NSDictionary *metrics = @{
     @"buttonHeight" : @(36),
     @"spacing" : @(15),
     @"scale" : @(1.25),
+    @"highPriority", : @(UILayoutPriorityDefaultHigh),
 };
 ```
 
@@ -80,9 +81,9 @@ These would all be valid CompactConstraint syntax:
 ```
 button.centerX = super.centerX
 label.width = button.width * scale + 40
-spinner.left = button.right + 10
+spinner.left = button.right + 10 @ highPriority
 button.height = buttonHeight
-spinner.height = 40
+spinner.height = 40 @ 100
 ```
 
 ## Installation
