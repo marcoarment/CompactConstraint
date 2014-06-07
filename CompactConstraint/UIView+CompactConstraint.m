@@ -5,7 +5,7 @@
 
 #import "UIView+CompactConstraint.h"
 
-@implementation UIView (CompactConstraint)
+@implementation CCView (CompactConstraint)
 
 - (NSLayoutConstraint *)addCompactConstraint:(NSString *)relationship metrics:(NSDictionary *)metrics views:(NSDictionary *)views
 {
@@ -17,7 +17,13 @@
 - (NSArray *)addCompactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views;
 {
     NSMutableArray *mConstraints = [NSMutableArray arrayWithCapacity:relationshipStrings.count];
-    for (NSString *relationship in relationshipStrings) [mConstraints addObject:[NSLayoutConstraint compactConstraint:relationship metrics:metrics views:views self:self]];
+    for (NSString *relationship in relationshipStrings) {
+        if ([relationship hasPrefix:@"H:"] || [relationship hasPrefix:@"V:"] || [relationship hasPrefix:@"|"] || [relationship hasPrefix:@"["]) {
+            [mConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:relationship options:0 metrics:metrics views:views]];
+        } else {
+            [mConstraints addObject:[NSLayoutConstraint compactConstraint:relationship metrics:metrics views:views self:self]];
+        }
+    }
     NSArray *constraints = [mConstraints copy];
     [self addConstraints:constraints];
     return constraints;

@@ -10,7 +10,6 @@ static CGFloat standardSpacingToView = 8.;
 
 @implementation NSLayoutConstraint (CompactConstraint)
 
-
 + (NSArray *)compactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views
 {
     return [self compactConstraints:relationshipStrings metrics:metrics views:views self:nil];
@@ -30,11 +29,16 @@ static CGFloat standardSpacingToView = 8.;
     return [self compactConstraint:relationship metrics:metrics views:views self:nil];
 }
 
+// For release builds, where the asserted variables (leftOperandScanned, etc.) aren't used because the assertions are removed
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
+
 + (instancetype)compactConstraint:(NSString *)relationship metrics:(NSDictionary *)metrics views:(NSDictionary *)views self:(id)selfView
 {
     static NSCharacterSet *operatorCharacterSet = nil;
     static NSCharacterSet *multiplicationOperatorCharacterSet = nil;
     static NSCharacterSet *additionOperatorCharacterSet = nil;
+    static NSCharacterSet *priorityOperatorCharacterSet = nil;
     static NSCharacterSet *leftOperandTerminatingCharacterSet = nil;
     static NSCharacterSet *rightOperandTerminatingCharacterSet = nil;
     static NSDictionary *propertyDictionary = nil;
@@ -55,10 +59,12 @@ static CGFloat standardSpacingToView = 8.;
 
         multiplicationOperatorCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"*/"];
         additionOperatorCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"+-"];
+        priorityOperatorCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"@"];
 
         NSMutableCharacterSet *rotcs = [NSCharacterSet.whitespaceAndNewlineCharacterSet mutableCopy];
         [rotcs formUnionWithCharacterSet:multiplicationOperatorCharacterSet];
         [rotcs formUnionWithCharacterSet:additionOperatorCharacterSet];
+        [rotcs formUnionWithCharacterSet:priorityOperatorCharacterSet];
         rightOperandTerminatingCharacterSet = [rotcs copy];
 
         operatorCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"<>="];
@@ -73,7 +79,7 @@ static CGFloat standardSpacingToView = 8.;
 
     id leftOperand, rightOperand, leftAttributeNumber, rightAttributeNumber, rightMetricNumber;
     NSLayoutAttribute leftAttribute, rightAttribute;
-    double rightScalar = 1.0, rightConstant = 0.0, rightMetric = 0.0;
+    double rightScalar = 1.0, rightConstant = 0.0, rightMetric = 0.0, priority = UILayoutPriorityRequired;
     BOOL rightOperandIsMetric = NO;
     NSString *leftOperandStr, *leftPropertyStr, *operatorStr, *rightOperandStr, *rightPropertyStr, *rightValueStr;
 
@@ -194,8 +200,21 @@ static CGFloat standardSpacingToView = 8.;
         rightConstant = rightMetric * rightScalar + rightConstant;
         rightScalar = 1.0;
     }
+    
+    if ([scanner scanCharactersFromSet:priorityOperatorCharacterSet intoString:NULL]) {
+        if (! [scanner scanDouble:&priority]) {
+            // see if the priority is a metric instead of a literal number
+            BOOL priorityAfterAt = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr];
+            NSAssert(priorityAfterAt, @"No priority given after '@' on right side");
+            rightMetricNumber = metrics[rightValueStr];
+            NSAssert1(rightMetricNumber, @"Right priority '%@' not found in metrics dictionary", rightValueStr);
+            priority = [rightMetricNumber doubleValue];
+        }
+    }
 
-    return [NSLayoutConstraint constraintWithItem:leftOperand attribute:leftAttribute relatedBy:relation toItem:rightOperand attribute:rightAttribute multiplier:rightScalar constant:rightConstant];
+    NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:leftOperand attribute:leftAttribute relatedBy:relation toItem:rightOperand attribute:rightAttribute multiplier:rightScalar constant:rightConstant];
+    constraint.priority = priority;
+    return constraint;
 }
 
 + (void) setStandardSpacingToSuperview:(CGFloat)value {
@@ -205,4 +224,6 @@ static CGFloat standardSpacingToView = 8.;
 + (void) setStandardSpacingToView:(CGFloat)value {
     standardSpacingToView = value;
 }
+#pragma clang diagnostic pop
+
 @end

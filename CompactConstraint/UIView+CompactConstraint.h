@@ -5,9 +5,18 @@
 
 #import "NSLayoutConstraint+CompactConstraint.h"
 
-@interface UIView (CompactConstraint)
+#ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
+    #define CCView UIView
+#elif TARGET_OS_MAC
+    #define CCView NSView
+#endif
 
+@interface CCView (CompactConstraint)
+
+// Add a single constraint with the compact syntax
 - (NSLayoutConstraint *)addCompactConstraint:(NSString *)relationship metrics:(NSDictionary *)metrics views:(NSDictionary *)views;
+
+// Add any number of constraints. Can also mix in Visual Format Language strings.
 - (NSArray *)addCompactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views;
 
 // And a convenient shortcut for what we always end up doing with the visualFormat call.
