@@ -204,8 +204,7 @@ static CGFloat standardSpacingToView = 8.;
     if ([scanner scanCharactersFromSet:priorityOperatorCharacterSet intoString:NULL]) {
         if (! [scanner scanDouble:&priority]) {
             // see if the priority is a metric instead of a literal number
-            BOOL priorityAfterAt = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr];
-            NSAssert(priorityAfterAt, @"No priority given after '@' on right side");
+            NSAssert([scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr], @"No priority given after '@' on right side");
             rightMetricNumber = metrics[rightValueStr];
             NSAssert1(rightMetricNumber, @"Right priority '%@' not found in metrics dictionary", rightValueStr);
             priority = [rightMetricNumber doubleValue];
