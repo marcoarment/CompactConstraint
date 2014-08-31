@@ -3,6 +3,9 @@
 //  Copyright (c) 2014 Marco Arment. See included LICENSE file.
 //
 
+@import UIKit;
+@import Foundation;
+
 @interface NSLayoutConstraint (CompactConstraint)
 
 + (instancetype)compactConstraint:(NSString *)relationship metrics:(NSDictionary *)metrics views:(NSDictionary *)views self:(id)selfView;
