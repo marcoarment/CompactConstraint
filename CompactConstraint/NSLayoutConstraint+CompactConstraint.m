@@ -36,6 +36,7 @@
     static NSCharacterSet *multiplicationOperatorCharacterSet = nil;
     static NSCharacterSet *additionOperatorCharacterSet = nil;
     static NSCharacterSet *priorityOperatorCharacterSet = nil;
+    static NSCharacterSet *identifierMarkerCharacterSet = nil;
     static NSCharacterSet *leftOperandTerminatingCharacterSet = nil;
     static NSCharacterSet *rightOperandTerminatingCharacterSet = nil;
     static NSDictionary *propertyDictionary = nil;
@@ -57,11 +58,13 @@
         multiplicationOperatorCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"*/"];
         additionOperatorCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"+-"];
         priorityOperatorCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"@"];
+        identifierMarkerCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"#"];
 
         NSMutableCharacterSet *rotcs = [NSCharacterSet.whitespaceAndNewlineCharacterSet mutableCopy];
         [rotcs formUnionWithCharacterSet:multiplicationOperatorCharacterSet];
         [rotcs formUnionWithCharacterSet:additionOperatorCharacterSet];
         [rotcs formUnionWithCharacterSet:priorityOperatorCharacterSet];
+        [rotcs formUnionWithCharacterSet:identifierMarkerCharacterSet];
         rightOperandTerminatingCharacterSet = [rotcs copy];
 
         operatorCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"<>="];
@@ -79,6 +82,7 @@
     double rightScalar = 1.0, rightConstant = 0.0, rightMetric = 0.0, priority = UILayoutPriorityRequired;
     BOOL rightOperandIsMetric = NO;
     NSString *leftOperandStr, *leftPropertyStr, *operatorStr, *rightOperandStr, *rightPropertyStr, *rightValueStr;
+    NSString *identifier = relationship;
 
     BOOL leftOperandScanned = [scanner scanUpToCharactersFromSet:leftOperandTerminatingCharacterSet intoString:&leftOperandStr];
     NSAssert(leftOperandScanned, @"No left operand given");
@@ -187,9 +191,22 @@
             priority = [rightMetricNumber doubleValue];
         }
     }
+    
+    if ([scanner scanCharactersFromSet:identifierMarkerCharacterSet intoString:NULL]) {
+        // take the rest of the string as the identifier
+        identifier = [relationship substringFromIndex:scanner.scanLocation];
+        identifier = [identifier stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (identifier.length == 0)
+        {
+            identifier = nil;
+        }
+    }
 
     NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:leftOperand attribute:leftAttribute relatedBy:relation toItem:rightOperand attribute:rightAttribute multiplier:rightScalar constant:rightConstant];
     constraint.priority = priority;
+    if ([constraint respondsToSelector:@selector(setIdentifier:)] && identifier) {
+        constraint.identifier = identifier;
+    }
     return constraint;
 }
 
