@@ -35,13 +35,15 @@ Or this:
 
 CompactConstraint syntax maps directly to the paramters passed to NSLayoutConstraint's built-in `constraintWithItem:attribute:relatedBy:toItem:attribute:multiplier:constant:` method:
 
-    leftItem.attribute [= == <= >=] rightItem.attribute [* /] multiplier [+ -] constant @ priority
+    leftItem.attribute [= == <= >=] rightItem.attribute [* /] multiplier [+ -] constant @ priority # identifier
 
 `leftItem` and `rightItem` are keys from the supplied `views` dictionary that map to UIViews, just like with Apple's visual-format-language calls.
 
 `rightItem` may be "super", which is interpreted as `leftItem`'s superview. If you specify a `@"super"` key in `views`, your supplied value will be used instead.
 
-`multiplier`, `constant`, and `priority` are optional. Additionally, `rightItem.attribute`, `multiplier`, `constant`, and `priority` can all optionally be replaced by entries in the supplied `metrics` dictionary, mapping to NSNumbers.
+`multiplier`, `constant`, `priority`, and `identifier` are optional. Additionally, `rightItem.attribute`, `multiplier`, `constant`, and `priority` can all optionally be replaced by entries in the supplied `metrics` dictionary, mapping to NSNumbers.
+
+In iOS 7+ anything following the `#` (or the the format string itself if no `#` is present) is set as the constraint’s `identifier` for easier debugging. To prevent any identifier being set, end your format string with a bare `#`.
 
 Valid attributes are simply the ends of the `NSLayoutAttribute` definitions with initial lowercase letters:
 
@@ -79,7 +81,7 @@ NSDictionary *metrics = @{
 These would all be valid CompactConstraint syntax:
 
 ```
-button.centerX = super.centerX
+button.centerX = super.centerX # horizontally-center button
 label.width = button.width * scale + 40
 spinner.left = button.right + 10 @ highPriority
 button.height = buttonHeight
