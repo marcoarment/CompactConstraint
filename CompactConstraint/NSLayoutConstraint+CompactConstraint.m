@@ -26,6 +26,16 @@
     return [self compactConstraint:relationship metrics:metrics views:views self:nil];
 }
 
++ (NSArray *)identifiedConstraintsWithVisualFormat:(NSString *)format options:(NSLayoutFormatOptions)opts metrics:(NSDictionary *)metrics views:(NSDictionary *)views
+{
+    NSArray *constraints = [self constraintsWithVisualFormat:format options:opts metrics:metrics views:views];
+    if ([self instancesRespondToSelector:@selector(setIdentifier:)])
+    {
+        [constraints makeObjectsPerformSelector:@selector(setIdentifier:) withObject:format];
+    }
+    return constraints;
+}
+
 // For release builds, where the asserted variables (leftOperandScanned, etc.) aren't used because the assertions are removed
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
