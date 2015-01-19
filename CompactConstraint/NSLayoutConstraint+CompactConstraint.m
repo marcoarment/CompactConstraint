@@ -29,10 +29,14 @@
 + (NSArray *)identifiedConstraintsWithVisualFormat:(NSString *)format options:(NSLayoutFormatOptions)opts metrics:(NSDictionary *)metrics views:(NSDictionary *)views
 {
     NSArray *constraints = [self constraintsWithVisualFormat:format options:opts metrics:metrics views:views];
-    if ([self instancesRespondToSelector:@selector(setIdentifier:)])
-    {
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wselector"
+    if ([self instancesRespondToSelector:@selector(setIdentifier:)]) {
         [constraints makeObjectsPerformSelector:@selector(setIdentifier:) withObject:format];
     }
+#pragma clang diagnostic pop
+
     return constraints;
 }
 
