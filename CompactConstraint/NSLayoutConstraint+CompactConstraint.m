@@ -67,6 +67,16 @@
             @".centerX" : @(NSLayoutAttributeCenterX),
             @".centerY" : @(NSLayoutAttributeCenterY),
             @".baseline" : @(NSLayoutAttributeBaseline),
+            @".lastBaseline" : @(NSLayoutAttributeLastBaseline),
+            @".firstBaseline" : @(NSLayoutAttributeFirstBaseline),
+            @".leftMargin" : @(NSLayoutAttributeLeftMargin),
+            @".rightMargin" : @(NSLayoutAttributeRightMargin),
+            @".topMargin" : @(NSLayoutAttributeTopMargin),
+            @".bottomMargin" : @(NSLayoutAttributeBottomMargin),
+            @".leadingMargin" :@(NSLayoutAttributeLeadingMargin),
+            @".trailingMargin" :@(NSLayoutAttributeTrailingMargin),
+            @".centerXWithinMargins": @(NSLayoutAttributeCenterXWithinMargins),
+            @".centerYWithinMargins": @(NSLayoutAttributeCenterYWithinMargins)
         };
 
         multiplicationOperatorCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"*/"];
