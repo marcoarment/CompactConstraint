@@ -5,6 +5,9 @@
 
 #import "NSLayoutConstraint+CompactConstraint.h"
 
+static CGFloat standardSpacingToSuperview = 20.;
+static CGFloat standardSpacingToView = 8.;
+
 @implementation NSLayoutConstraint (CompactConstraint)
 
 + (NSArray *)compactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views
@@ -110,6 +113,7 @@
 
     BOOL leftOperandScanned = [scanner scanUpToCharactersFromSet:leftOperandTerminatingCharacterSet intoString:&leftOperandStr];
     NSAssert(leftOperandScanned, @"No left operand given");
+    if (leftOperandScanned) {}
     leftOperandStr = [leftOperandStr stringByTrimmingCharactersInSet:leftOperandTerminatingCharacterSet];
     NSRange lastDot = [leftOperandStr rangeOfString:@"." options:NSBackwardsSearch];
     NSAssert1(lastDot.location != NSNotFound, @"Left operand has no property, e.g. '%@.width'", leftOperandStr);
@@ -128,6 +132,7 @@
 
     BOOL operatorScanned = [scanner scanCharactersFromSet:operatorCharacterSet intoString:&operatorStr];
     NSAssert(operatorScanned, @"No operator given");
+    if (operatorScanned) {}
     NSLayoutRelation relation;
     if ([operatorStr isEqualToString:@"=="] || [operatorStr isEqualToString:@"="]) relation = NSLayoutRelationEqual;
     else if ([operatorStr isEqualToString:@">="]) relation = NSLayoutRelationGreaterThanOrEqual;
@@ -142,6 +147,7 @@
         // right operand is a symbol. Either a metric or a view. Views have dot-properties, metrics don't.
         BOOL rightOperandScanned = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightOperandStr];
         NSAssert(rightOperandScanned, @"No right operand given");
+        if (rightOperandScanned) {}
 
         lastDot = [rightOperandStr rangeOfString:@"." options:NSBackwardsSearch];
         if (lastDot.location == NSNotFound) {
@@ -149,9 +155,17 @@
             rightOperandIsMetric = YES;
             rightAttribute = NSLayoutAttributeNotAnAttribute;
             rightOperand = nil;
+            if ([rightOperandStr isEqualToString:@"std"]) {
+                if (leftAttribute == NSLayoutAttributeTop || leftAttribute == NSLayoutAttributeLeft) {
+                    rightMetric = standardSpacingToSuperview;
+                } else {
+                    NSAssert(NO, @"Right metric 'std' can only be used with 'top' or 'left' left attributed");
+                }
+            } else {
             rightMetricNumber = metrics[rightOperandStr];
             NSAssert1(rightMetricNumber, @"Right metric '%@' not found in metrics dictionary", rightOperandStr);
             rightMetric = [rightMetricNumber doubleValue];
+            }
         } else {
             rightPropertyStr = [rightOperandStr substringFromIndex:lastDot.location];
             rightOperandStr = [rightOperandStr substringToIndex:lastDot.location];
@@ -179,6 +193,7 @@
             // see if the scalar is a metric instead of a literal number
             BOOL scalarAfterMultiplication = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr];
             NSAssert(scalarAfterMultiplication, @"No scalar given after '*' on right side");
+            if (scalarAfterMultiplication) {}
             rightMetricNumber = metrics[rightValueStr];
             NSAssert1(rightMetricNumber, @"Right scalar '%@' not found in metrics dictionary", rightValueStr);
             rightScalar = [rightMetricNumber doubleValue];
@@ -192,9 +207,18 @@
             // see if the scalar is a metric instead of a literal number
             BOOL constantAfterAddition = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr];
             NSAssert(constantAfterAddition, @"No constant given after '+' on right side");
-            rightMetricNumber = metrics[rightValueStr];
-            NSAssert1(rightMetricNumber, @"Right constant '%@' not found in metrics dictionary", rightValueStr);
-            rightConstant = [rightMetricNumber doubleValue];
+            if (constantAfterAddition) {}
+            if ([rightValueStr isEqualToString:@"std"] && !rightOperandIsMetric) {
+                if ([leftOperand isDescendantOfView:rightOperand] || [rightOperand isDescendantOfView:leftOperand]) {
+                    rightConstant = standardSpacingToSuperview;
+                } else {
+                    rightConstant = standardSpacingToView;
+                }
+            } else {
+                rightMetricNumber = metrics[rightValueStr];
+                NSAssert1(rightMetricNumber, @"Right constant '%@' not found in metrics dictionary", rightValueStr);
+                rightConstant = [rightMetricNumber doubleValue];
+            }
         }
 
         if ([valueOperator isEqualToString:@"-"]) rightConstant = -rightConstant;
@@ -208,8 +232,7 @@
     if ([scanner scanCharactersFromSet:priorityOperatorCharacterSet intoString:NULL]) {
         if (! [scanner scanDouble:&priority]) {
             // see if the priority is a metric instead of a literal number
-            BOOL priorityAfterAt = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr];
-            NSAssert(priorityAfterAt, @"No priority given after '@' on right side");
+            NSAssert([scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr], @"No priority given after '@' on right side");
             rightMetricNumber = metrics[rightValueStr];
             NSAssert1(rightMetricNumber, @"Right priority '%@' not found in metrics dictionary", rightValueStr);
             priority = [rightMetricNumber doubleValue];
@@ -234,6 +257,13 @@
     return constraint;
 }
 
++ (void) setStandardSpacingToSuperview:(CGFloat)value {
+    standardSpacingToSuperview = value;
+}
+
++ (void) setStandardSpacingToView:(CGFloat)value {
+    standardSpacingToView = value;
+}
 #pragma clang diagnostic pop
 
 @end

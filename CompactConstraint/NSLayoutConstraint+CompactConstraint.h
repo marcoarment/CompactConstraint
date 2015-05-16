@@ -3,10 +3,15 @@
 //  Copyright (c) 2014 Marco Arment. See included LICENSE file.
 //
 
+@import UIKit;
+@import Foundation;
+
 @interface NSLayoutConstraint (CompactConstraint)
 
 + (instancetype)compactConstraint:(NSString *)relationship metrics:(NSDictionary *)metrics views:(NSDictionary *)views self:(id)selfView;
 + (NSArray *)compactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views self:(id)selfView;
++ (void) setStandardSpacingToSuperview:(CGFloat)value;
++ (void) setStandardSpacingToView:(CGFloat)value;
 
 // And a convenient shortcut for creating constraints with the visualFormat string as the identifier
 + (NSArray *)identifiedConstraintsWithVisualFormat:(NSString *)format options:(NSLayoutFormatOptions)opts metrics:(NSDictionary *)metrics views:(NSDictionary *)views;
