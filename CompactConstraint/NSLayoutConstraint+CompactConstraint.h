@@ -3,6 +3,8 @@
 //  Copyright (c) 2014 Marco Arment. See included LICENSE file.
 //
 
+#import <Cocoa/Cocoa.h>
+
 @interface NSLayoutConstraint (CompactConstraint)
 
 + (instancetype)compactConstraint:(NSString *)relationship metrics:(NSDictionary *)metrics views:(NSDictionary *)views self:(id)selfView;

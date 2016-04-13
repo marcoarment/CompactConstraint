@@ -3,6 +3,12 @@
 //  Copyright (c) 2014 Marco Arment. See included LICENSE file.
 //
 
+#if TARGET_OS_IPHONE
+#define kPriorityRequired UILayoutPriorityRequired
+#else
+#define kPriorityRequired NSLayoutPriorityRequired
+#endif
+
 #import "NSLayoutConstraint+CompactConstraint.h"
 
 @implementation NSLayoutConstraint (CompactConstraint)
@@ -69,6 +75,7 @@
             @".baseline" : @(NSLayoutAttributeBaseline),
             @".lastBaseline" : @(NSLayoutAttributeLastBaseline),
             @".firstBaseline" : @(NSLayoutAttributeFirstBaseline),
+#if TARGET_OS_IPHONE
             @".leftMargin" : @(NSLayoutAttributeLeftMargin),
             @".rightMargin" : @(NSLayoutAttributeRightMargin),
             @".topMargin" : @(NSLayoutAttributeTopMargin),
@@ -77,6 +84,7 @@
             @".trailingMargin" :@(NSLayoutAttributeTrailingMargin),
             @".centerXWithinMargins": @(NSLayoutAttributeCenterXWithinMargins),
             @".centerYWithinMargins": @(NSLayoutAttributeCenterYWithinMargins)
+#endif
         };
 
         multiplicationOperatorCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"*/"];
@@ -103,7 +111,7 @@
 
     id leftOperand, rightOperand, leftAttributeNumber, rightAttributeNumber, rightMetricNumber;
     NSLayoutAttribute leftAttribute, rightAttribute;
-    double rightScalar = 1.0, rightConstant = 0.0, rightMetric = 0.0, priority = UILayoutPriorityRequired;
+    double rightScalar = 1.0, rightConstant = 0.0, rightMetric = 0.0, priority = kPriorityRequired;
     BOOL rightOperandIsMetric = NO;
     NSString *leftOperandStr, *leftPropertyStr, *operatorStr, *rightOperandStr, *rightPropertyStr, *rightValueStr;
     NSString *identifier = relationship;
