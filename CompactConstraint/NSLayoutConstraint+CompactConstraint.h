@@ -3,7 +3,11 @@
 //  Copyright (c) 2014 Marco Arment. See included LICENSE file.
 //
 
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#else
 #import <Cocoa/Cocoa.h>
+#endif
 
 @interface NSLayoutConstraint (CompactConstraint)
 
