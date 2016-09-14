@@ -3,6 +3,8 @@
 //  Copyright (c) 2014 Marco Arment. See included LICENSE file.
 //
 
+#import "TargetConditionals.h" 
+
 #if TARGET_OS_IPHONE
 #define kPriorityRequired UILayoutPriorityRequired
 #else
