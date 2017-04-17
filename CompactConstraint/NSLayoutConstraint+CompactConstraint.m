@@ -51,6 +51,7 @@
 // For release builds, where the asserted variables (leftOperandScanned, etc.) aren't used because the assertions are removed
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-value"
 
 + (instancetype)compactConstraint:(NSString *)relationship metrics:(NSDictionary *)metrics views:(NSDictionary *)views self:(id)selfView
 {
@@ -119,6 +120,7 @@
     NSString *identifier = relationship;
 
     BOOL leftOperandScanned = [scanner scanUpToCharactersFromSet:leftOperandTerminatingCharacterSet intoString:&leftOperandStr];
+    #pragma unused(leftOperandScanned)
     NSAssert(leftOperandScanned, @"No left operand given");
     leftOperandStr = [leftOperandStr stringByTrimmingCharactersInSet:leftOperandTerminatingCharacterSet];
     NSRange lastDot = [leftOperandStr rangeOfString:@"." options:NSBackwardsSearch];
@@ -137,6 +139,7 @@
     leftAttribute = (NSLayoutAttribute) [leftAttributeNumber integerValue];
 
     BOOL operatorScanned = [scanner scanCharactersFromSet:operatorCharacterSet intoString:&operatorStr];
+    #pragma unused(operatorScanned)
     NSAssert(operatorScanned, @"No operator given");
     NSLayoutRelation relation;
     if ([operatorStr isEqualToString:@"=="] || [operatorStr isEqualToString:@"="]) relation = NSLayoutRelationEqual;
@@ -152,6 +155,7 @@
         // right operand is a symbol. Either a metric or a view. Views have dot-properties, metrics don't.
         BOOL rightOperandScanned = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightOperandStr];
         NSAssert(rightOperandScanned, @"No right operand given");
+        #pragma unused(rightOperandScanned)
 
         lastDot = [rightOperandStr rangeOfString:@"." options:NSBackwardsSearch];
         if (lastDot.location == NSNotFound) {
@@ -189,6 +193,8 @@
             // see if the scalar is a metric instead of a literal number
             BOOL scalarAfterMultiplication = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr];
             NSAssert(scalarAfterMultiplication, @"No scalar given after '*' on right side");
+            #pragma unused(scalarAfterMultiplication)
+
             rightMetricNumber = metrics[rightValueStr];
             NSAssert1(rightMetricNumber, @"Right scalar '%@' not found in metrics dictionary", rightValueStr);
             rightScalar = [rightMetricNumber doubleValue];
@@ -202,6 +208,8 @@
             // see if the scalar is a metric instead of a literal number
             BOOL constantAfterAddition = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr];
             NSAssert(constantAfterAddition, @"No constant given after '+' on right side");
+            #pragma unused(constantAfterAddition)
+
             rightMetricNumber = metrics[rightValueStr];
             NSAssert1(rightMetricNumber, @"Right constant '%@' not found in metrics dictionary", rightValueStr);
             rightConstant = [rightMetricNumber doubleValue];
@@ -220,6 +228,8 @@
             // see if the priority is a metric instead of a literal number
             BOOL priorityAfterAt = [scanner scanUpToCharactersFromSet:rightOperandTerminatingCharacterSet intoString:&rightValueStr];
             NSAssert(priorityAfterAt, @"No priority given after '@' on right side");
+            #pragma unused(priorityAfterAt)
+
             rightMetricNumber = metrics[rightValueStr];
             NSAssert1(rightMetricNumber, @"Right priority '%@' not found in metrics dictionary", rightValueStr);
             priority = [rightMetricNumber doubleValue];
