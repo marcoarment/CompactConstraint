@@ -39,7 +39,7 @@ CompactConstraint syntax maps directly to the paramters passed to NSLayoutConstr
 
 `leftItem` and `rightItem` are keys from the supplied `views` dictionary that map to UIViews, just like with Apple's visual-format-language calls.
 
-`rightItem` may be "super", which is interpreted as `leftItem`'s superview. If you specify a `@"super"` key in `views`, your supplied value will be used instead.
+`rightItem` may be "super", which is interpreted as `leftItem`'s superview, or "safe", which is interpreted as `leftItem`'s superview's `safeAreaLayoutGuide`. If you specify `@"super"` or `@"safe"` keys in `views`, your supplied values will be used instead.
 
 `multiplier`, `constant`, `priority`, and `identifier` are optional. Additionally, `rightItem.attribute`, `multiplier`, `constant`, and `priority` can all optionally be replaced by entries in the supplied `metrics` dictionary, mapping to NSNumbers.
 

@@ -174,6 +174,9 @@
                 if ([rightOperandStr isEqualToString:@"super"]) {
                     rightOperand = [leftOperand superview];
                     NSAssert(rightOperand, @"Right operand is super, but superview of left operand is nil");
+                } else if ([rightOperandStr isEqualToString:@"safe"]) {
+                    rightOperand = [leftOperand superview].safeAreaLayoutGuide;
+                    NSAssert(rightOperand, @"Right operand is safe, but superview of left operand is nil");
                 } else if ([rightOperandStr isEqualToString:@"self"]) {
                     rightOperand = selfView;
                     NSAssert(rightOperand, @"Right operand is self, but self is nil or not supplied");
