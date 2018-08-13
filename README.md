@@ -43,7 +43,7 @@ CompactConstraint syntax maps directly to the paramters passed to NSLayoutConstr
 
 `multiplier`, `constant`, `priority`, and `identifier` are optional. Additionally, `rightItem.attribute`, `multiplier`, `constant`, and `priority` can all optionally be replaced by entries in the supplied `metrics` dictionary, mapping to NSNumbers.
 
-In iOS 7+ anything following the `#` (or the the format string itself if no `#` is present) is set as the constraint’s `identifier` for easier debugging. To prevent any identifier being set, end your format string with a bare `#`.
+In iOS 7+ anything following the `#` (or the format string itself if no `#` is present) is set as the constraint’s `identifier` for easier debugging. To prevent any identifier being set, end your format string with a bare `#`.
 
 Valid attributes are simply the ends of the `NSLayoutAttribute` definitions with initial lowercase letters:
 
