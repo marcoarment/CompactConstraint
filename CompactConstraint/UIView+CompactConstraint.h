@@ -14,12 +14,12 @@
 @interface CCView (CompactConstraint)
 
 // Add a single constraint with the compact syntax
-- (NSLayoutConstraint *)addCompactConstraint:(NSString *)relationship metrics:(NSDictionary *)metrics views:(NSDictionary *)views;
+- (NSLayoutConstraint * _Nullable)addCompactConstraint:(NSString * _Nonnull)relationship metrics:(NSDictionary * _Nullable)metrics views:(NSDictionary * _Nullable)views;
 
 // Add any number of constraints. Can also mix in Visual Format Language strings.
-- (NSArray *)addCompactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views;
+- (NSArray * _Nullable)addCompactConstraints:(NSArray * _Nonnull)relationshipStrings metrics:(NSDictionary * _Nullable)metrics views:(NSDictionary * _Nullable)views;
 
 // And a convenient shortcut for what we always end up doing with the visualFormat call.
-- (void)addConstraintsWithVisualFormat:(NSString *)format options:(NSLayoutFormatOptions)opts metrics:(NSDictionary *)metrics views:(NSDictionary *)views;
+- (void)addConstraintsWithVisualFormat:(NSString * _Nonnull)format options:(NSLayoutFormatOptions)opts metrics:(NSDictionary * _Nullable)metrics views:(NSDictionary * _Nullable)views;
 
 @end
