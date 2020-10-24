@@ -94,4 +94,4 @@ Just include the handful of files in the `CompactConstraint` directory in your p
 
 ## Is it fast?
 
-It's fast enough for me. Try it and see if it's fast enough for you.
+It's fast enough for me. Try it and see if it's [fast enough for you](https://www.youtube.com/watch?v=AyM6siPmJok).
