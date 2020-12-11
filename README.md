@@ -3,7 +3,7 @@ CompactConstraint
 
 A simple NSLayoutConstraint expression parser for more readable autolayout code. By [Marco Arment](http://www.marco.org/) and released under the MIT license (see LICENSE file).
 
-Apple's [visual format syntax](https://developer.apple.com/library/ios/documentation/userexperience/conceptual/AutolayoutPG/VisualFormatLanguage/VisualFormatLanguage.html) is helpful, but it cannot express all types of autolayout constraints, and it's not ideal for simple values. Creating NSLayoutConstraints manually is more powerful and covers all possibilities, but is __extremely__ verbose and hard to read.
+Apple's [visual format syntax](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/VisualFormatLanguage.html) is helpful, but it cannot express all types of autolayout constraints, and it's not ideal for simple values. Creating NSLayoutConstraints manually is more powerful and covers all possibilities, but is __extremely__ verbose and hard to read.
 
 CompactConstraint brings compact, readable syntax to creating NSLayoutConstraints manually. In short, rather than writing Cocoa autolayout constraints like this:
 
