@@ -15,11 +15,6 @@
 
 @implementation NSLayoutConstraint (CompactConstraint)
 
-+ (NSArray *)compactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views
-{
-    return [self compactConstraints:relationshipStrings metrics:metrics views:views self:nil];
-}
-
 + (NSArray *)compactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views self:(id)selfView
 {
     NSMutableArray *constraints = [NSMutableArray array];
@@ -27,11 +22,6 @@
         [constraints addObject:[self compactConstraint:relationship metrics:metrics views:views self:selfView]];
     }
     return [constraints copy];
-}
-
-+ (instancetype)compactConstraint:(NSString *)relationship metrics:(NSDictionary *)metrics views:(NSDictionary *)views
-{
-    return [self compactConstraint:relationship metrics:metrics views:views self:nil];
 }
 
 + (NSArray *)identifiedConstraintsWithVisualFormat:(NSString *)format options:(NSLayoutFormatOptions)opts metrics:(NSDictionary *)metrics views:(NSDictionary *)views

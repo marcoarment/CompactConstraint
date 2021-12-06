@@ -13,14 +13,10 @@
 
 @interface NSLayoutConstraint (CompactConstraint)
 
-+ (instancetype)compactConstraint:(NSString *)relationship metrics:(NSDictionary *)metrics views:(NSDictionary *)views self:(id)selfView;
-+ (NSArray *)compactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views self:(id)selfView;
++ (instancetype _Nonnull)compactConstraint:(NSString * _Nonnull)relationship metrics:(NSDictionary * _Nullable)metrics views:(NSDictionary * _Nullable)views self:(id _Nullable)selfView;
++ (NSArray<NSLayoutConstraint *> * _Nonnull)compactConstraints:(NSArray * _Nullable)relationshipStrings metrics:(NSDictionary * _Nullable)metrics views:(NSDictionary * _Nullable)views self:(id _Nullable)selfView;
 
 // And a convenient shortcut for creating constraints with the visualFormat string as the identifier
-+ (NSArray *)identifiedConstraintsWithVisualFormat:(NSString *)format options:(NSLayoutFormatOptions)opts metrics:(NSDictionary *)metrics views:(NSDictionary *)views;
-
-// Deprecated, will be removed shortly:
-+ (instancetype)compactConstraint:(NSString *)relationship metrics:(NSDictionary *)metrics views:(NSDictionary *)views       __attribute__ ((deprecated));
-+ (NSArray *)compactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views   __attribute__ ((deprecated));
++ (NSArray<NSLayoutConstraint *> * _Nonnull)identifiedConstraintsWithVisualFormat:(NSString * _Nonnull)format options:(NSLayoutFormatOptions)opts metrics:(NSDictionary * _Nullable)metrics views:(NSDictionary * _Nullable)views;
 
 @end
