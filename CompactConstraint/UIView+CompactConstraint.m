@@ -18,7 +18,7 @@
 {
     NSMutableArray *mConstraints = [NSMutableArray arrayWithCapacity:relationshipStrings.count];
     for (NSString *relationship in relationshipStrings) {
-        if ([relationship hasPrefix:@"H:"] || [relationship hasPrefix:@"V:"] || [relationship hasPrefix:@"|"] || [relationship hasPrefix:@"["]) {
+        if ([NSLayoutConstraint compactConstraintStringIsVisualFormatString:relationship]) {
             [mConstraints addObjectsFromArray:[NSLayoutConstraint identifiedConstraintsWithVisualFormat:relationship options:0 metrics:metrics views:views]];
         } else {
             [mConstraints addObject:[NSLayoutConstraint compactConstraint:relationship metrics:metrics views:views self:self]];

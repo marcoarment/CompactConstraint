@@ -15,11 +15,26 @@
 
 @implementation NSLayoutConstraint (CompactConstraint)
 
++ (BOOL)compactConstraintStringIsVisualFormatString:(NSString * _Nullable)relationship
+{
+    return
+        [relationship hasPrefix:@"H:"] ||
+        [relationship hasPrefix:@"V:"] ||
+        [relationship hasPrefix:@"|"] ||
+        [relationship hasPrefix:@"["] ||
+        [relationship hasPrefix:@"-"]
+    ;
+}
+
 + (NSArray *)compactConstraints:(NSArray *)relationshipStrings metrics:(NSDictionary *)metrics views:(NSDictionary *)views self:(id)selfView
 {
     NSMutableArray *constraints = [NSMutableArray array];
     for (NSString *relationship in relationshipStrings) {
-        [constraints addObject:[self compactConstraint:relationship metrics:metrics views:views self:selfView]];
+        if ([NSLayoutConstraint compactConstraintStringIsVisualFormatString:relationship]) {
+            [constraints addObjectsFromArray:[self identifiedConstraintsWithVisualFormat:relationship options:0 metrics:metrics views:views]];
+        } else {
+            [constraints addObject:[self compactConstraint:relationship metrics:metrics views:views self:selfView]];
+        }
     }
     return [constraints copy];
 }

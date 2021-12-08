@@ -19,4 +19,7 @@
 // And a convenient shortcut for creating constraints with the visualFormat string as the identifier
 + (NSArray<NSLayoutConstraint *> * _Nonnull)identifiedConstraintsWithVisualFormat:(NSString * _Nonnull)format options:(NSLayoutFormatOptions)opts metrics:(NSDictionary * _Nullable)metrics views:(NSDictionary * _Nullable)views;
 
+// Utility
++ (BOOL)compactConstraintStringIsVisualFormatString:(NSString * _Nullable)relationship;
+
 @end
